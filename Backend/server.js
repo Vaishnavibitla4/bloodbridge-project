@@ -25,6 +25,12 @@ app.use(
   })
 );
 app.use(express.json());
+
+app.get('/healthz', (req, res) => {
+  res.send('OK');
+});
+
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/donors", donorRoutes);
@@ -41,14 +47,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong" });
 });
 
+  
+
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+
