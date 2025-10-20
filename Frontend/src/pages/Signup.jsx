@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-console.log("✅ API URL Loaded:", API_URL);
+console.log("✅ API URL Loaded:", import.meta.env.VITE_API_URL);
 
 
 const Signup = ({ onLoginSuccess }) => {
@@ -46,8 +46,8 @@ const Signup = ({ onLoginSuccess }) => {
     try {
       if (role === "user") {
         const url = isSignIn
-          ? `${API_URL}/api/auth/login`
-          : `${API_URL}/api/auth/register`;
+          ? `${API_URL}/auth/login`
+          : `${API_URL}/auth/register`;
 
         const body = isSignIn
           ? { email, password }
