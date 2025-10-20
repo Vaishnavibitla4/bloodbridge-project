@@ -43,8 +43,8 @@ const Signup = ({ onLoginSuccess }) => {
     try {
       if (role === "user") {
         const url = isSignIn
-          ? `${API_URL}/api/auth/login`
-          : `${API_URL}/api/auth/register`;
+          ? `${API_URL}/auth/login`
+          : `${API_URL}/auth/register`;
 
         const body = isSignIn
           ? { email, password }
