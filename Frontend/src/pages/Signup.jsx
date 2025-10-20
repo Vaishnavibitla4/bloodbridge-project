@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+console.log("✅ API URL Loaded:", import.meta.env.VITE_API_URL);
+
+
 const Signup = ({ onLoginSuccess }) => {
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
