@@ -8,7 +8,7 @@ const VerifyRecipients = () => {
   // Fetch all recipients from DB
   const fetchRecipients = async () => {
     try {
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/recipients");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/recipients`);
       const data = await res.json();
 
       // Sort: unapproved first, approved last

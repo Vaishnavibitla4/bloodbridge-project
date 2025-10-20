@@ -32,7 +32,7 @@ const BecomeDonorForm = ({ userId, email }) => {
     const fetchDonor = async () => {
       try {
         if (!formData.email) return;
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/donors/email/${formData.email}`);
+        const res = await axios.get(`${import.meta.env.local.VITE_API_URL}/api/donors/email/${formData.email}`);
         if (res.data && res.data._id) {
           setDonor(res.data);
           setFormData({

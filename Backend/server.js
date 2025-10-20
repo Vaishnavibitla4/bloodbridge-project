@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5000;
 // ✅ Allow frontend (React running on 3000)
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:3000", "https://bloodbridge-project-1.onrender.com"],
+    origin: ["http://localhost:5173", "http://127.0.0.1:3000", "https://bloodbridge-project-1.onrender.com", "https://bloodbridge-project.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
