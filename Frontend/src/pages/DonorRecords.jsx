@@ -7,7 +7,7 @@ const DonorRecords = () => {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/donors"); // your existing getDonors route
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donors`); // your existing getDonors route
         const data = await res.json();
         if (res.ok) {
           setDonors(data); // if your backend sends { donors: [...] } use data.donors

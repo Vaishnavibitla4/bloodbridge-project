@@ -6,7 +6,7 @@ const MatchDonors = () => {
 
   const fetchMatches = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/donors/matches");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donors/matches`);
       const data = await res.json();
       setMatches(data);
     } catch (err) {

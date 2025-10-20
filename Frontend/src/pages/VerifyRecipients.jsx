@@ -8,7 +8,7 @@ const VerifyRecipients = () => {
   // Fetch all recipients from DB
   const fetchRecipients = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/recipients");
+      const res = await fetch("${import.meta.env.VITE_API_URL}/api/recipients");
       const data = await res.json();
 
       // Sort: unapproved first, approved last
@@ -27,7 +27,7 @@ const VerifyRecipients = () => {
   // Approve recipient
   const handleApprove = async (id, name) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/recipients/approve/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/recipients/approve/${id}`, {
         method: "PUT",
       });
 

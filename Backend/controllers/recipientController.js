@@ -4,6 +4,8 @@ import Donor from "../models/Donor.js";
 import {sendEmail} from "../utils/mailer.js";
 import crypto from "crypto";
 
+const BASE_URL = process.env.BACKEND_URL || "http://localhost:5000";
+
 export const addRecipient = async (req, res) => {
   try {
     const { name, email, bloodType, hospital, urgency } = req.body;
@@ -115,8 +117,8 @@ export const approveTheRecipient = async (req, res) => {
       await donor.save();
 
       // Generate Yes/No links
-      const yesLink = `http://localhost:5000/api/donors/confirm/${token}?status=yes`;
-      const noLink = `http://localhost:5000/api/donors/confirm/${token}?status=no`;
+      const yesLink = `${BASE_URL}/api/donors/confirm/${token}?status=yes`;
+      const noLink = `${BASE_URL}/api/donors/confirm/${token}?status=no`;
 
       // Send email
       await sendEmail(

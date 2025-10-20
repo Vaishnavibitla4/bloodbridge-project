@@ -32,7 +32,7 @@ const BecomeDonorForm = ({ userId, email }) => {
     const fetchDonor = async () => {
       try {
         if (!formData.email) return;
-        const res = await axios.get(`http://localhost:5000/api/donors/email/${formData.email}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/donors/email/${formData.email}`);
         if (res.data && res.data._id) {
           setDonor(res.data);
           setFormData({
@@ -72,7 +72,7 @@ const BecomeDonorForm = ({ userId, email }) => {
       if (donor) {
         // Update existing donor
         res = await axios.put(
-          `http://localhost:5000/api/donors/${donor._id}`,
+          `${import.meta.env.VITE_API_URL}/api/donors/${donor._id}`,
           { ...formData, userId }
         );
 
@@ -88,7 +88,7 @@ const BecomeDonorForm = ({ userId, email }) => {
         toast.success("Details updated successfully!");
       } else {
         // Add new donor
-        res = await axios.post("http://localhost:5000/api/donors", {
+        res = await axios.post(`${import.meta.env.VITE_API_URL}/api/donors`, {
           ...formData,
           userId,
         });

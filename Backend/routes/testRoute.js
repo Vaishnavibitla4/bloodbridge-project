@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/test-email", async (req, res) => {
   await sendEmail(
-    "shreeshakuragayala@gmail.com",
+    "bitlavaishnavi4@gmail.com",
     "Test Email from BloodBridge",
     "This is a plain text test email",
     "<h2>BloodBridge Email System Working ✅</h2>"

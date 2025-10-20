@@ -41,8 +41,8 @@ const Signup = ({ onLoginSuccess }) => {
     try {
       if (role === "user") {
         const url = isSignIn
-          ? "http://localhost:5000/api/auth/login"
-          : "http://localhost:5000/api/auth/register";
+          ? `${import.meta.env.VITE_API_URL}/api/auth/login`
+          : `${import.meta.env.VITE_API_URL}/api/auth/register`;
 
         const body = isSignIn
           ? { email, password }

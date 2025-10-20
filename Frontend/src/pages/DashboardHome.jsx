@@ -14,10 +14,10 @@ const DashboardHome = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const donorRes = await axios.get("http://localhost:5000/api/donors/count");
-        const recipientRes = await axios.get("http://localhost:5000/api/recipients/count");
-        const matchRes = await axios.get("http://localhost:5000/api/donors/matches");
-        const bloodTypeRes = await axios.get("http://localhost:5000/api/donors/blood-type-stats");
+        const donorRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/donors/count`);
+        const recipientRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/recipients/count`);
+        const matchRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/donors/matches`);
+        const bloodTypeRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/donors/blood-type-stats`);
 
         setTotalDonors(donorRes.data.totalDonors);
         setRecipientCount(recipientRes.data.totalRecipients);

@@ -51,7 +51,7 @@ export default function BloodRequestPage() {
   }
 
   try {
-    const response = await axios.post("http://localhost:5000/api/recipients", form);
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/recipients`, form);
     alert(response.data.message);
     setSubmitted(true);
   } catch (error) {
