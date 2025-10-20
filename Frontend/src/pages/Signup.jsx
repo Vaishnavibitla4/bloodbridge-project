@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = "http://localhost:5000/api";
+
 const Signup = ({ onLoginSuccess }) => {
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -41,8 +43,8 @@ const Signup = ({ onLoginSuccess }) => {
     try {
       if (role === "user") {
         const url = isSignIn
-          ? `${import.meta.env.VITE_API_URL}/api/auth/login`
-          : `${import.meta.env.VITE_API_URL}/api/auth/register`;
+          ? `${API_URL}/api/auth/login`
+          : `${API_URL}/api/auth/register`;
 
         const body = isSignIn
           ? { email, password }
