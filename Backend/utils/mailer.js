@@ -1,30 +1,36 @@
-import nodemailer from "nodemailer";
+// utils/mailer.js
+import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-// Transporter setup using Gmail (or any SMTP service)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER, // your email
-    pass: process.env.EMAIL_PASS, // app password (not normal password)
-  },
-});
+// ✅ Set SendGrid API key from environment variables
+sgMail.setApiKey(process.env.EMAIL_PASS);
 
-// Reusable function
+/**
+ * Reusable function to send email
+ * @param {string} to - recipient email
+ * @param {string} subject - email subject
+ * @param {string} text - plain text body
+ * @param {string} html - HTML body
+ */
 export const sendEmail = async (to, subject, text, html) => {
   try {
-    await transporter.sendMail({
-      from: `Blood Donation System <${process.env.EMAIL_USER}>`,
+    const msg = {
       to,
+      from: process.env.EMAIL_USER || "bloodbridge4u@gmail.com", // verified sender
       subject,
       text,
       html,
-    });
-    console.log("Email sent successfully to:", to);
+    };
+
+    await sgMail.send(msg);
+    console.log("✅ Email sent successfully to:", to);
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("❌ Error sending email:", error);
+    // If SendGrid returns detailed errors
+    if (error.response && error.response.body) {
+      console.error(error.response.body);
+    }
   }
 };
-
