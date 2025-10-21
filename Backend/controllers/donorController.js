@@ -1,6 +1,8 @@
 import Donor from "../models/Donor.js";
 import User from "../models/User.js";
 import Recipient from "../models/Recipient.js";
+import { sendEmail } from "../utils/mailer.js";
+import crypto from "crypto";
 
 // ✅ Add Donor
 export const addDonor = async (req, res) => {

@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (to, subject, text, html) => {
   try {
     await transporter.sendMail({
-      from: `"Blood Donation System" <${process.env.EMAIL_USER}>`,
+      from: `Blood Donation System <${process.env.EMAIL_USER}>`,
       to,
       subject,
       text,
