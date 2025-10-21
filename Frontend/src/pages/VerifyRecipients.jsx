@@ -27,7 +27,7 @@ const VerifyRecipients = () => {
   // Approve recipient
   const handleApprove = async (id, name) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/recipients/approve/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/recipients/approve-with-email/${id}`, {
         method: "PUT",
       });
 
