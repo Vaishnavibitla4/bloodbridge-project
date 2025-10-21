@@ -153,7 +153,7 @@ export const approveTheRecipient = async (req, res) => {
         );
         console.log(`✅ Email successfully sent to ${donor.email}`);
       } catch (emailError) {
-        console.error(`❌ Failed to send email to ${donor.email}:, emailError.message`);
+        console.error(`❌ Failed to send email to ${donor.email}:`, emailError.message);
       }
     }
 
