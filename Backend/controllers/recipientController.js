@@ -95,6 +95,7 @@ export const approveRecipient = async (req, res) => {
 export const approveTheRecipient = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("🔹 Approving recipient with ID:", id);
 
     // 1️⃣ Update recipient status
     const recipient = await Recipient.findByIdAndUpdate(
@@ -102,40 +103,65 @@ export const approveTheRecipient = async (req, res) => {
       { approved: true },
       { new: true }
     );
-    if (!recipient) return res.status(404).json({ message: "Recipient not found" });
+    if (!recipient) {
+      console.log("❌ Recipient not found");
+      return res.status(404).json({ message: "Recipient not found" });
+    }
+
+    console.log("✅ Recipient approved:", recipient.email, recipient.bloodType);
 
     // 2️⃣ Find matching donors
     const donors = await Donor.find({ bloodGroup: recipient.bloodType });
+    console.log(`🔹 Found ${donors.length} donors matching blood group ${recipient.bloodType}`);
+
+    if (donors.length === 0) {
+      console.log("⚠ No donors found for this blood group.");
+    }
 
     // 3️⃣ Send email to each donor
     for (const donor of donors) {
-      // Generate a unique token
-      const token = crypto.randomBytes(16).toString("hex");
+      try {
+        console.log(`📧 Preparing email for donor: ${donor.email}`);
 
-      // Save pending confirmation in DB
-      donor.confirmedDonations.push({ recipientId: recipient._id, status: "pending", token });
-      await donor.save();
+        // Generate a unique token
+        const token = crypto.randomBytes(16).toString("hex");
 
-      // Generate Yes/No links
-      const yesLink = `${BASE_URL}/api/donors/confirm/${token}?status=yes`;
-      const noLink = `${BASE_URL}/api/donors/confirm/${token}?status=no`;
+        // Save pending confirmation in DB
+        donor.confirmedDonations.push({
+          recipientId: recipient._id,
+          status: "pending",
+          token,
+        });
+        await donor.save();
+        console.log(`💾 Saved pending confirmation for donor: ${donor.email}`);
 
-      // Send email
-      await sendEmail(
-        donor.email,
-        "Urgent: Blood Request Matched",
-        `Dear ${donor.name}, a recipient requires your blood group (${recipient.bloodType}). Please confirm availability.`,
-        `<p>Dear <b>${donor.name}</b>,</p>
-         <p>A recipient requiring <b>${recipient.bloodType}</b> blood has been approved.</p>
-         <p>Please confirm your availability:</p>
-         <a href="${yesLink}" style="padding:10px 20px;background:green;color:white;text-decoration:none;">Yes</a>
-         <a href="${noLink}" style="padding:10px 20px;background:red;color:white;text-decoration:none;">No</a>`
-      );
+        // Generate Yes/No links
+        const yesLink = `${BASE_URL}/api/donors/confirm/${token}?status=yes`;
+        const noLink = `${BASE_URL}/api/donors/confirm/${token}?status=no`;
+
+        // Send email
+        console.log("📤 Sending email...");
+        await sendEmail(
+          donor.email,
+          "Urgent: Blood Request Matched",
+          `Dear ${donor.name}, a recipient requires your blood group (${recipient.bloodType}). Please confirm availability.`,
+          `<p>Dear <b>${donor.name}</b>,</p>
+           <p>A recipient requiring <b>${recipient.bloodType}</b> blood has been approved.</p>
+           <p>Please confirm your availability:</p>
+           <a href="${yesLink}" style="padding:10px 20px;background:green;color:white;text-decoration:none;">Yes</a>
+           <a href="${noLink}" style="padding:10px 20px;background:red;color:white;text-decoration:none;">No</a>`
+        );
+        console.log(`✅ Email successfully sent to ${donor.email}`);
+      } catch (emailError) {
+        console.error(`❌ Failed to send email to ${donor.email}:, emailError.message`);
+      }
     }
 
-    res.json({ message: "Recipient approved and emails sent to matching donors." });
+    res.json({
+      message: "Recipient approved and emails attempted for matching donors.",
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("💥 Error in approveTheRecipient:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
