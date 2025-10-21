@@ -1,7 +1,7 @@
 import Recipient from "../models/Recipient.js";
 import User from "../models/User.js";
 import Donor from "../models/Donor.js";
-import {sendEmail} from "../utils/mailer.js";
+import { sendEmail } from "../utils/mailer.js";
 import crypto from "crypto";
 
 const BASE_URL = process.env.BACKEND_URL || "http://localhost:5000";

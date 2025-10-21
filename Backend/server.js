@@ -10,6 +10,9 @@ import testEmailRoute from "./routes/testRoute.js";
 
 dotenv.config();
 
+console.log("✅ Loaded BACKEND_URL:", process.env.BACKEND_URL);
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
