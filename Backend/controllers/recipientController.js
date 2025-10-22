@@ -92,6 +92,8 @@ export const approveRecipient = async (req, res) => {
 };
 
 
+const MIN_DAYS_BETWEEN_DONATIONS = 56; // minimum days between donations
+
 export const approveTheRecipient = async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,22 +110,33 @@ export const approveTheRecipient = async (req, res) => {
       return res.status(404).json({ message: "Recipient not found" });
     }
 
-    console.log("✅ Recipient approved:", recipient.email, recipient.bloodType);
+    console.log("✅ Recipient approved:", recipient.email, recipient.bloodType, recipient.hospital);
 
-    // 2️⃣ Find matching donors
-    const donors = await Donor.find({ bloodGroup: recipient.bloodType });
-    console.log(`🔹 Found ${donors.length} donors matching blood group ${recipient.bloodType}`);
+    // 2️⃣ Find eligible donors
+    const now = new Date();
+    const minDate = new Date(now.getTime() - MIN_DAYS_BETWEEN_DONATIONS * 24 * 60 * 60 * 1000);
+
+    const donors = await Donor.find({
+      bloodGroup: recipient.bloodType,
+      $or: [
+        { lastDonationDate: { $exists: false } }, // never donated
+        { lastDonationDate: { $lte: minDate } },  // donated >= 56 days ago
+      ],
+    });
+
+    console.log(
+      `🔹 Found ${donors.length} eligible donors matching blood group ${recipient.bloodType} and last donation ≥ ${MIN_DAYS_BETWEEN_DONATIONS} days ago or never donated`
+    );
 
     if (donors.length === 0) {
-      console.log("⚠ No donors found for this blood group.");
+      console.log("⚠ No eligible donors found for this blood group and donation interval.");
     }
 
-    // 3️⃣ Send email to each donor
+    // 3️⃣ Send email to each eligible donor
     for (const donor of donors) {
       try {
         console.log(`📧 Preparing email for donor: ${donor.email}`);
 
-        // Generate a unique token
         const token = crypto.randomBytes(16).toString("hex");
 
         // Save pending confirmation in DB
@@ -135,30 +148,29 @@ export const approveTheRecipient = async (req, res) => {
         await donor.save();
         console.log(`💾 Saved pending confirmation for donor: ${donor.email}`);
 
-        // Generate Yes/No links
         const yesLink = `${BASE_URL}/api/donors/confirm/${token}?status=yes`;
         const noLink = `${BASE_URL}/api/donors/confirm/${token}?status=no`;
 
-        // Send email
-        console.log("📤 Sending email...");
+        // Updated email template with hospital
         await sendEmail(
           donor.email,
           "Urgent: Blood Request Matched",
-          `Dear ${donor.name}, a recipient requires your blood group (${recipient.bloodType}). Please confirm availability.`,
+          `Dear ${donor.name}, a recipient requires your blood group (${recipient.bloodType}) at ${recipient.hospital}. Please confirm availability.`,
           `<p>Dear <b>${donor.name}</b>,</p>
-           <p>A recipient requiring <b>${recipient.bloodType}</b> blood has been approved.</p>
+           <p>A recipient requiring <b>${recipient.bloodType}</b> blood has been approved at <b>${recipient.hospital}</b>.</p>
            <p>Please confirm your availability:</p>
-           <a href="${yesLink}" style="padding:10px 20px;background:green;color:white;text-decoration:none;">Yes</a>
+           <a href="${yesLink}" style="padding:10px 20px;background:green;color:white;text-decoration:none;margin-right:10px;">Yes</a>
            <a href="${noLink}" style="padding:10px 20px;background:red;color:white;text-decoration:none;">No</a>`
         );
+
         console.log(`✅ Email successfully sent to ${donor.email}`);
       } catch (emailError) {
-        console.error(`❌ Failed to send email to ${donor.email}:`, emailError.message);
+        console.error(`❌ Failed to send email to ${donor.email}:, emailError.message`);
       }
     }
 
     res.json({
-      message: "Recipient approved and emails attempted for matching donors.",
+      message: "Recipient approved and emails attempted for eligible donors.",
     });
   } catch (error) {
     console.error("💥 Error in approveTheRecipient:", error);

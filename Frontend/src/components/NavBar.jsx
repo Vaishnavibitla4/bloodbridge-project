@@ -19,7 +19,7 @@ const Navbar = ({ onSectionChange }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken"); // optional: clear token
-    navigate("/signup");
+    navigate("/");
   };
 
   return (
