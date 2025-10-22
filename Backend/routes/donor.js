@@ -7,8 +7,10 @@ import {
   getDonorById,
   getDonorByUserId,
   getDonorByEmail,
-  getDonorCount, // ✅ NEW
-  getMatches,getDonorBloodTypeStats,confirmDonation,
+  getDonorCount,
+  getMatches,
+  getDonorBloodTypeStats,
+  confirmDonation,
 } from "../controllers/donorController.js";
 import Donor from "../models/Donor.js";
 
@@ -19,10 +21,30 @@ router.post("/", addDonor);
 router.get("/", getDonors);
 
 router.get("/blood-type-stats", getDonorBloodTypeStats);
-
-// ✅ NEW: Get total donor count
 router.get("/count", getDonorCount);
 router.get("/matches", getMatches);
+
+// ✅ NEW: Search Donors by Blood Type
+router.get("/search/:bloodType", async (req, res) => {
+  try {
+    const { bloodType } = req.params;
+
+    // Case-insensitive search for A+, O-, etc.
+    const donors = await Donor.find({
+      bloodType: { $regex: new RegExp(`^${bloodType}$`, "i") },
+    });
+
+    if (!donors.length) {
+      return res.status(404).json({ message: "No donors found with this blood type." });
+    }
+
+    res.json(donors);
+  } catch (err) {
+    console.error("Error fetching donors by blood type:", err);
+    res.status(500).json({ error: "Server error while fetching donors." });
+  }
+});
+
 router.get("/:id", getDonorById);
 router.put("/:id", editDonor);
 router.delete("/:id", deleteDonor);
@@ -74,7 +96,6 @@ router.get("/activity-stats", async (req, res) => {
   }
 });
 
-
 // ✅ Blood Type Distribution
 router.get("/bloodtype-distribution", async (req, res) => {
   try {
@@ -95,6 +116,5 @@ router.get("/bloodtype-distribution", async (req, res) => {
 });
 
 router.get("/confirm/:token", confirmDonation);
-
 
 export default router;
