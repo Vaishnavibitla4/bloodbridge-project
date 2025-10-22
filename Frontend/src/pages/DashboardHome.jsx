@@ -45,7 +45,7 @@ const DashboardHome = () => {
     labels: ["Active Donors", "Inactive Donors", "New Registrations"],
     datasets: [
       {
-        data: [720, 180, 345],
+        data: [10, 5, 8],
         backgroundColor: ["#ef4444", "#f59e0b", "#10b981"],
       },
     ],

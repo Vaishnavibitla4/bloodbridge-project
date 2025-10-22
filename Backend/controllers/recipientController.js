@@ -157,7 +157,7 @@ export const approveTheRecipient = async (req, res) => {
           "Urgent: Blood Request Matched",
           `Dear ${donor.name}, a recipient requires your blood group (${recipient.bloodType}) at ${recipient.hospital}. Please confirm availability.`,
           `<p>Dear <b>${donor.name}</b>,</p>
-           <p>A recipient requiring <b>${recipient.bloodType}</b> blood has been approved at <b>${recipient.hospital}</b>.</p>
+           <p>A recipient requiring <b>${recipient.bloodType}</b> which matches with your Blood type is in need at <b>${recipient.hospital}</b> .</p>
            <p>Please confirm your availability:</p>
            <a href="${yesLink}" style="padding:10px 20px;background:green;color:white;text-decoration:none;margin-right:10px;">Yes</a>
            <a href="${noLink}" style="padding:10px 20px;background:red;color:white;text-decoration:none;">No</a>`
