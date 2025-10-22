@@ -5,7 +5,6 @@ import DashboardHome from "./DashboardHome";
 import VerifyRecipients from "./VerifyRecipients";
 import MatchDonors from "./MatchDonors";
 import DonorRecords from "./DonorRecords";
-import Logout from "./Logout";
 
 const AdminDashboard = () => {
   return (
@@ -23,7 +22,6 @@ const AdminDashboard = () => {
           <Route path="verify" element={<VerifyRecipients />} />
           <Route path="match" element={<MatchDonors />} />
           <Route path="donors" element={<DonorRecords />} />
-          <Route path="logout" element={<Logout />} />
         </Routes>
       </div>
     </div>
