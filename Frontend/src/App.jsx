@@ -10,7 +10,7 @@ import DashboardHome from "./pages/DashboardHome";
 import VerifyRecipients from "./pages/VerifyRecipients";
 import MatchDonors from "./pages/MatchDonors";
 import DonorRecords from "./pages/DonorRecords";
-import Settings from "./pages/Settings";
+import Logout from "./pages/Logout";
 import Navbar from "./components/NavBar";
 
 function AppWrapper() {
@@ -75,7 +75,7 @@ function AppWrapper() {
           <Route path="verify" element={<VerifyRecipients />} />
           <Route path="match" element={<MatchDonors />} />
           <Route path="donors" element={<DonorRecords />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
     </>
