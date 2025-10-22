@@ -74,7 +74,6 @@ function AppWrapper() {
           <Route path="verify" element={<VerifyRecipients />} />
           <Route path="match" element={<MatchDonors />} />
           <Route path="donors" element={<DonorRecords />} />
-          <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
     </>
