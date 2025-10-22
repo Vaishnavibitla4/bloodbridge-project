@@ -10,7 +10,6 @@ import DashboardHome from "./pages/DashboardHome";
 import VerifyRecipients from "./pages/VerifyRecipients";
 import MatchDonors from "./pages/MatchDonors";
 import DonorRecords from "./pages/DonorRecords";
-import Logout from "./pages/Logout";
 import Navbar from "./components/NavBar";
 
 function AppWrapper() {
