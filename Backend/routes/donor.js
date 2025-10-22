@@ -24,14 +24,18 @@ router.get("/blood-type-stats", getDonorBloodTypeStats);
 router.get("/count", getDonorCount);
 router.get("/matches", getMatches);
 
-// ✅ NEW: Search Donors by Blood Type
-router.get("/search/:bloodType", async (req, res) => {
-  try {
-    const { bloodType } = req.params;
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-    // Case-insensitive search for A+, O-, etc.
+// ✅ NEW: Search Donors by Blood Type
+router.get("/search/:bloodGroup", async (req, res) => {
+  try {
+    const bloodGroup = req.params.bloodGroup.trim();
+    const escapedBloodGroup = escapeRegex(bloodGroup);
+
     const donors = await Donor.find({
-      bloodType: { $regex: new RegExp(`^${bloodType}$`, "i") },
+      bloodGroup: { $regex: new RegExp(`^${escapedBloodGroup}$`, "i") },
     });
 
     if (!donors.length) {

@@ -218,7 +218,7 @@ export default function BloodRequestPage() {
               >
                 <p className="font-bold">{donor.name}</p>
                 <p>Email: {donor.email}</p>
-                {donor.location && <p>Location: {donor.location}</p>}
+                {donor.location && <p>Location: {donor.address}</p>}
               </li>
             ))}
           </ul>
