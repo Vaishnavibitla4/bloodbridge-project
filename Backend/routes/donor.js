@@ -34,9 +34,10 @@ router.get("/search/:bloodGroup", async (req, res) => {
     const bloodGroup = req.params.bloodGroup.trim();
     const escapedBloodGroup = escapeRegex(bloodGroup);
 
-    const donors = await Donor.find({
-      bloodGroup: { $regex: new RegExp(`^${escapedBloodGroup}$`, "i") },
-    });
+    const donors = await Donor.find(
+      { bloodGroup: { $regex: new RegExp(`^${escapedBloodGroup}$`, "i") }},
+      {name: 1, district: 1}
+    );
 
     if (!donors.length) {
       return res.status(404).json({ message: "No donors found with this blood type." });

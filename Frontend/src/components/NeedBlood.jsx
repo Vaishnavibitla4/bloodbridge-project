@@ -217,8 +217,7 @@ export default function BloodRequestPage() {
                 className="border p-3 rounded-lg bg-white shadow-sm"
               >
                 <p className="font-bold">{donor.name}</p>
-                <p>Email: {donor.email}</p>
-                {donor.location && <p>Location: {donor.address}</p>}
+                <p>Location: {donor.district}</p>
               </li>
             ))}
           </ul>
