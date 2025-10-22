@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import About from "./pages/About"; // Landing page
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -29,24 +30,16 @@ function AppWrapper() {
       {showNavbar && <Navbar onLogout={handleLogout} />}
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            !authRole ? (
-              <Signup onLoginSuccess={(role) => setAuthRole(role)} />
-            ) : authRole === "admin" ? (
-              <Navigate to="/admin/dashboard" />
-            ) : (
-              <Navigate to="/home" />
-            )
-          }
-        />
+        {/* Landing page */}
+        <Route path="/" element={<About />} />
 
+        {/* Signup page */}
         <Route
           path="/signup"
           element={<Signup onLoginSuccess={(role) => setAuthRole(role)} />}
         />
 
+        {/* Home page (after user login) */}
         <Route
           path="/home"
           element={
@@ -75,6 +68,9 @@ function AppWrapper() {
           <Route path="match" element={<MatchDonors />} />
           <Route path="donors" element={<DonorRecords />} />
         </Route>
+
+        {/* Redirect any unknown route to landing page */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );

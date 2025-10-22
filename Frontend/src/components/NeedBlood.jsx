@@ -12,8 +12,9 @@ const bloodStock = [
   { type: "AB-" },
 ];
 
-export default function BloodRequestPage() {
-  const [search, setSearch] = useState("");
+export default function NeedBlood() {
+  const [search, setSearch] = useState(""); // Search bar input
+  const [matchedDonors, setMatchedDonors] = useState([]);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -23,22 +24,18 @@ export default function BloodRequestPage() {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [matchedDonors, setMatchedDonors] = useState([]);
 
-  const filteredStock = bloodStock.filter((b) =>
-    b.type.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // ✅ Fetch donors automatically when blood type changes
+  // ✅ Fetch matched donors when search changes
   useEffect(() => {
     const fetchMatchedDonors = async () => {
-      if (!form.bloodType) {
+      if (!search) {
         setMatchedDonors([]);
         return;
       }
+
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/donors/matches?bloodType=${form.bloodType}`
+          `${import.meta.env.VITE_API_URL}/api/donors/search/${encodeURIComponent(search)}`
         );
         setMatchedDonors(response.data);
       } catch (error) {
@@ -48,19 +45,20 @@ export default function BloodRequestPage() {
     };
 
     fetchMatchedDonors();
-  }, [form.bloodType]);
+  }, [search]);
 
+  // Form validation
   const validate = () => {
-    let newErrors = {};
+    const newErrors = {};
     if (!form.name) newErrors.name = "Name is required";
-    if (!form.email || !/\S+@\S+\.\S+/.test(form.email))
-      newErrors.email = "Valid email is required";
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) newErrors.email = "Valid email is required";
     if (!form.bloodType) newErrors.bloodType = "Blood type is required";
     if (!form.hospital) newErrors.hospital = "Hospital name is required";
     if (!form.urgency) newErrors.urgency = "Urgency level is required";
     return newErrors;
   };
 
+  // Submit blood request
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
@@ -99,20 +97,30 @@ export default function BloodRequestPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {search && (
-          <div className="mt-2 bg-gray-100 p-2 rounded shadow-sm">
-            {filteredStock.length > 0 ? (
-              filteredStock.map((b) => (
-                <p key={b.type} className="text-red-600 font-medium">
-                  {b.type}
-                </p>
-              ))
-            ) : (
-              <p className="text-gray-500">No blood type found</p>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* ✅ Matched Donors */}
+      {search && matchedDonors.length > 0 && (
+        <div className="bg-gray-50 p-4 rounded-lg shadow-md">
+          <h3 className="text-xl font-semibold text-red-700 mb-3">
+            Matching Donors ({search})
+          </h3>
+          <ul className="space-y-2">
+            {matchedDonors.map((donor) => (
+              <li key={donor._id} className="border p-3 rounded-lg bg-white shadow-sm">
+                <p className="font-bold">Name: {donor.name}</p>
+                <p>District: {donor.district}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {search && matchedDonors.length === 0 && (
+        <p className="text-gray-500 text-center">
+          No donors available for {search} blood type.
+        </p>
+      )}
 
       {/* Recipient Request Form */}
       <div className="bg-white shadow-lg rounded-lg p-6">
@@ -159,9 +167,7 @@ export default function BloodRequestPage() {
                   </option>
                 ))}
               </select>
-              {errors.bloodType && (
-                <p className="text-red-500 text-sm">{errors.bloodType}</p>
-              )}
+              {errors.bloodType && <p className="text-red-500 text-sm">{errors.bloodType}</p>}
             </div>
 
             <div>
@@ -172,9 +178,7 @@ export default function BloodRequestPage() {
                 value={form.hospital}
                 onChange={(e) => setForm({ ...form, hospital: e.target.value })}
               />
-              {errors.hospital && (
-                <p className="text-red-500 text-sm">{errors.hospital}</p>
-              )}
+              {errors.hospital && <p className="text-red-500 text-sm">{errors.hospital}</p>}
             </div>
 
             <div>
@@ -189,9 +193,7 @@ export default function BloodRequestPage() {
                 <option value="Within 24 Hours">Within 24 Hours</option>
                 <option value="Not Urgent">Not Urgent</option>
               </select>
-              {errors.urgency && (
-                <p className="text-red-500 text-sm">{errors.urgency}</p>
-              )}
+              {errors.urgency && <p className="text-red-500 text-sm">{errors.urgency}</p>}
             </div>
 
             <button
@@ -203,32 +205,6 @@ export default function BloodRequestPage() {
           </form>
         )}
       </div>
-
-      {/* ✅ Show matched donors immediately */}
-      {form.bloodType && matchedDonors.length > 0 && (
-        <div className="bg-gray-50 p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-red-700 mb-3">
-            Matching Donors ({form.bloodType})
-          </h3>
-          <ul className="space-y-2">
-            {matchedDonors.map((donor) => (
-              <li
-                key={donor._id}
-                className="border p-3 rounded-lg bg-white shadow-sm"
-              >
-                <p className="font-bold">{donor.name}</p>
-                <p>Location: {donor.district}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {form.bloodType && matchedDonors.length === 0 && (
-        <p className="text-gray-500 text-center">
-          No donors available for {form.bloodType} blood type.
-        </p>
-      )}
     </div>
   );
 }
