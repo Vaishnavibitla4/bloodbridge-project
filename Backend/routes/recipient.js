@@ -1,4 +1,5 @@
 import express from "express";
+import Recipient from "../models/Recipient.js";
 
 
 import {
@@ -15,6 +16,18 @@ const router = express.Router();
 
 router.post("/", addRecipient);
 router.get("/", getRecipients);
+// GET /api/recipients/pending-count
+router.get("/pending-count", async (req, res) => {
+  try {
+    const pendingCount = await Recipient.countDocuments({ approved: false });
+    res.json({ pendingCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 // ✅ NEW: Get total recipient count
 router.get("/count", getRecipientCount);
 router.get("/:id", getRecipientById);

@@ -19,12 +19,6 @@ const MatchDonors = () => {
     fetchMatches();
   }, []);
 
-  const handleShare = (donor, recipient) => {
-    toast.success(`Shared ${donor}'s details with ${recipient}`, {
-      icon: "📤",
-      duration: 3000,
-    });
-  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -42,12 +36,6 @@ const MatchDonors = () => {
                 ✔ <strong>{match.donor}</strong> – {match.blood} →{" "}
                 <strong>{match.recipient}</strong>
               </span>
-              <button
-                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-200"
-                onClick={() => handleShare(match.donor, match.recipient)}
-              >
-                Share Donor Details
-              </button>
             </li>
           ))}
         </ul>
