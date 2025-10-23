@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const bloodStock = [
   { type: "A+" },
@@ -72,7 +73,7 @@ export default function NeedBlood() {
         `${import.meta.env.VITE_API_URL}/api/recipients`,
         form
       );
-      alert(response.data.message);
+      toast.success("Blood request submitted successfully!");
       setSubmitted(true);
     } catch (error) {
       const msg = error.response?.data?.message || "Something went wrong";
@@ -171,7 +172,7 @@ export default function NeedBlood() {
             </div>
 
             <div>
-              <label className="block font-medium">Hospital Name</label>
+              <label className="block font-medium">Hospital Address</label>
               <input
                 type="text"
                 className="w-full border rounded-lg p-2"
