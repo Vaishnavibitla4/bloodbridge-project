@@ -48,7 +48,7 @@ const ContactUs = () => {
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
               Contact via Phone / WhatsApp
             </h3>
-            <p className="text-gray-600 mb-4 text-sm sm:text-base">+91 98765 43210</p>
+            <p className="text-gray-600 mb-4 text-sm sm:text-base">+91 8096280982</p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
               {/* Click-to-call button */}
               <a

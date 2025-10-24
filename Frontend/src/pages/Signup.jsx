@@ -69,7 +69,7 @@ const Signup = ({ onLoginSuccess }) => {
         console.log("📩 Backend response:", res.status, data);
 
         if (res.ok) {
-          toast.success(data.message || "Success!");
+          alert(isSignIn ? "Login Successful!" : "Registration Successful!");
 
           if (data.user && data.token) {
   localStorage.setItem("authToken", data.token);

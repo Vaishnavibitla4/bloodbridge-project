@@ -27,7 +27,6 @@ const BecomeDonorForm = ({ userId, email }) => {
   const [donor, setDonor] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // ✅ Fetch donor by email on mount
   useEffect(() => {
     const fetchDonor = async () => {
       try {
@@ -49,17 +48,14 @@ const BecomeDonorForm = ({ userId, email }) => {
     fetchDonor();
   }, [formData.email]);
 
-  // ✅ Handle change
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "state") setFormData({ ...formData, state: value, district: "" });
     else setFormData({ ...formData, [name]: value });
   };
 
-  // ✅ Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const age = parseInt(formData.age);
     const weight = parseFloat(formData.weight);
 
@@ -68,15 +64,11 @@ const BecomeDonorForm = ({ userId, email }) => {
 
     try {
       let res;
-
       if (donor) {
-        // Update existing donor
         res = await axios.put(
           `${import.meta.env.VITE_API_URL}/api/donors/${donor._id}`,
           { ...formData, userId }
         );
-
-        // ✅ Set updated donor correctly
         setDonor(res.data);
         setFormData({
           ...res.data,
@@ -84,16 +76,11 @@ const BecomeDonorForm = ({ userId, email }) => {
             ? res.data.lastDonationDate.split("T")[0]
             : "",
         });
-
         toast.success("Details updated successfully!");
       } else {
-        // Add new donor
         res = await axios.post(`${import.meta.env.VITE_API_URL}/api/donors`, {
-          ...formData,
-          userId,
+          ...formData, userId,
         });
-
-        // The API returns { message, donor }
         setDonor(res.data.donor);
         setFormData({
           ...res.data.donor,
@@ -101,10 +88,8 @@ const BecomeDonorForm = ({ userId, email }) => {
             ? res.data.donor.lastDonationDate.split("T")[0]
             : "",
         });
-
         toast.success("Donor successfully added!");
       }
-
       setIsEditing(false);
     } catch (err) {
       console.error(err);
@@ -131,223 +116,236 @@ const BecomeDonorForm = ({ userId, email }) => {
         <DonorDetails donor={donor} onEdit={handleEdit} />
       ) : (
         <form onSubmit={handleSubmit} className="space-y-8">
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-    {/* Full Name */}
-    <div>
-      <label className="block font-medium">Full Name</label>
-      <input
-        type="text"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      />
-    </div>
+            {/* Full Name */}
+            <div>
+              <label className="block font-medium">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                required
+              />
+            </div>
 
-    {/* Age */}
-    <div>
-      <label className="block font-medium">Age</label>
-      <input
-        type="number"
-        name="age"
-        value={formData.age}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      />
-    </div>
+            {/* Age */}
+            <div>
+              <label className="block font-medium">Age</label>
+              <input
+                type="number"
+                name="age"
+                placeholder="Enter your age (18–65)"
+                value={formData.age}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                min="18"
+                max="65"
+                required
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Eligible age range: 18–65 years
+              </p>
+            </div>
 
-    {/* Weight */}
-    <div>
-      <label className="block font-medium">Weight (kg)</label>
-      <input
-        type="number"
-        name="weight"
-        value={formData.weight}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      />
-    </div>
+            {/* Weight */}
+            <div>
+              <label className="block font-medium">Weight (kg)</label>
+              <input
+                type="number"
+                name="weight"
+                placeholder="Enter your weight in kg"
+                value={formData.weight}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                required
+              />
+            </div>
 
-    {/* Gender */}
-    <div>
-      <label className="block font-medium">Gender</label>
-      <select
-        name="gender"
-        value={formData.gender}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      >
-        <option value="">Select</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
-    </div>
+            {/* Gender */}
+            <div>
+              <label className="block font-medium">Gender</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                required
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
 
-    {/* Blood Group */}
-    <div>
-      <label className="block font-medium">Blood Group</label>
-      <select
-        name="bloodGroup"
-        value={formData.bloodGroup}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      >
-        <option value="">Select</option>
-        {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map((group) => (
-          <option key={group} value={group}>
-            {group}
-          </option>
-        ))}
-      </select>
-    </div>
+            {/* Blood Group */}
+            <div>
+              <label className="block font-medium">Blood Group</label>
+              <select
+                name="bloodGroup"
+                value={formData.bloodGroup}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                required
+              >
+                <option value="">Select blood group</option>
+                {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map((group) => (
+                  <option key={group} value={group}>
+                    {group}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-    {/* Contact */}
-    <div>
-      <label className="block font-medium">Contact</label>
-      <input
-        type="tel"
-        name="contact"
-        value={formData.contact}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-        required
-      />
-    </div>
+            {/* Contact */}
+            <div>
+              <label className="block font-medium">Contact</label>
+              <input
+                type="tel"
+                name="contact"
+                placeholder="Enter your phone number"
+                value={formData.contact}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+                required
+              />
+            </div>
 
-    {/* Email */}
-    <div>
-      <label className="block font-medium">Email</label>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        className="w-full border rounded p-2 bg-gray-100"
-        readOnly
-      />
-    </div>
+            {/* Email */}
+            <div>
+              <label className="block font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Your registered email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border rounded p-2 bg-gray-100"
+                readOnly
+              />
+            </div>
 
-    {/* Address */}
-    <div>
-      <label className="block font-medium">Address</label>
-      <input
-        type="text"
-        name="address"
-        value={formData.address}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      />
-    </div>
+            {/* Address */}
+            <div>
+              <label className="block font-medium">Address</label>
+              <input
+                type="text"
+                name="address"
+                placeholder="Enter your full address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              />
+            </div>
 
-    {/* City */}
-    <div>
-      <label className="block font-medium">City</label>
-      <input
-        type="text"
-        name="city"
-        value={formData.city}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      />
-    </div>
+            {/* City */}
+            <div>
+              <label className="block font-medium">City</label>
+              <input
+                type="text"
+                name="city"
+                placeholder="Enter your city"
+                value={formData.city}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              />
+            </div>
 
-    {/* State */}
-    <div>
-      <label className="block font-medium">State</label>
-      <select
-        name="state"
-        value={formData.state}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      >
-        <option value="">Select</option>
-        <option value="Telangana">Telangana</option>
-        <option value="Andhra Pradesh">Andhra Pradesh</option>
-      </select>
-    </div>
+            {/* State */}
+            <div>
+              <label className="block font-medium">State</label>
+              <select
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              >
+                <option value="">Select state</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+              </select>
+            </div>
 
-    {/* District */}
-    <div>
-      <label className="block font-medium">District</label>
-      <select
-        name="district"
-        value={formData.district}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      >
-        <option value="">Select</option>
-        {districtOptions.map((district) => (
-          <option key={district} value={district}>
-            {district}
-          </option>
-        ))}
-      </select>
-    </div>
+            {/* District */}
+            <div>
+              <label className="block font-medium">District</label>
+              <select
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              >
+                <option value="">Select district</option>
+                {districtOptions.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-    {/* Area */}
-    <div>
-      <label className="block font-medium">Area</label>
-      <input
-        type="text"
-        name="area"
-        value={formData.area}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      />
-    </div>
+            {/* Area */}
+            <div>
+              <label className="block font-medium">Area</label>
+              <input
+                type="text"
+                name="area"
+                placeholder="Enter your area/locality"
+                value={formData.area}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              />
+            </div>
 
-    {/* Last Donation Date */}
-    <div>
-      <label className="block font-medium">Last Donation Date</label>
-      <input
-        type="date"
-        name="lastDonationDate"
-        value={formData.lastDonationDate}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      />
-    </div>
+            {/* Last Donation Date */}
+            <div>
+              <label className="block font-medium">Last Donation Date</label>
+              <input
+                type="date"
+                name="lastDonationDate"
+                value={formData.lastDonationDate}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              />
+            </div>
 
-    {/* Disease Info */}
-    <div>
-      <label className="block font-medium">Disease Info (if any)</label>
-      <input
-        type="text"
-        name="diseaseInfo"
-        value={formData.diseaseInfo}
-        onChange={handleChange}
-        className="w-full border rounded p-2"
-      />
-    </div>
-  </div>
+            {/* Disease Info */}
+            <div>
+              <label className="block font-medium">Disease Info (if any)</label>
+              <input
+                type="text"
+                name="diseaseInfo"
+                placeholder="Mention any medical conditions (optional)"
+                value={formData.diseaseInfo}
+                onChange={handleChange}
+                className="w-full border rounded p-2"
+              />
+            </div>
+          </div>
 
-  <div className="flex justify-between mt-6">
-    {donor && (
-      <button
-        type="button"
-        onClick={() => setIsEditing(false)}
-        className="bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 transition"
-      >
-        Cancel
-      </button>
-    )}
+          <div className="flex justify-between mt-6">
+            {donor && (
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 transition"
+              >
+                Cancel
+              </button>
+            )}
 
-    <button
-      type="submit"
-      className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
-    >
-      {donor ? "Save Changes" : "Submit"}
-    </button>
-  </div>
-</form>
-
+            <button
+              type="submit"
+              className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
+            >
+              {donor ? "Save Changes" : "Submit"}
+            </button>
+          </div>
+        </form>
       )}
     </div>
   );
