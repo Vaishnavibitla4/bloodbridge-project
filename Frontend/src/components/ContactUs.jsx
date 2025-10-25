@@ -48,11 +48,10 @@ const ContactUs = () => {
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
               Contact via Phone / WhatsApp
             </h3>
-            <p className="text-gray-600 mb-4 text-sm sm:text-base">+91 8096280982</p>
+            <p className="text-gray-600 mb-4 text-sm sm:text-base">+91 xxxxxxxxxx</p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
               {/* Click-to-call button */}
               <a
-                href="tel:+919876543210"
                 className="px-6 py-2 sm:px-8 sm:py-3 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-all duration-300 w-full sm:w-auto text-center"
               >
                 Call Now
@@ -60,9 +59,6 @@ const ContactUs = () => {
 
               {/* WhatsApp button */}
               <a
-                href="https://wa.me/919876543210?text=Hello%20BloodBridge!"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="px-6 py-2 sm:px-8 sm:py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-all duration-300 w-full sm:w-auto text-center"
               >
                 Chat on WhatsApp
